@@ -1,7 +1,9 @@
 import express from "express";
 import { getImageByID, postImageToS3 } from "../controllers/images";
 
-const router = express.Router();
+const imagesRouter = express.Router();
 
-router.route("/images/:id").get(getImageByID).post(postImageToS3);
+imagesRouter.route("/images/:id").get(getImageByID).post(postImageToS3);
 // router.route("/api/images/:id");
+
+export default imagesRouter;
