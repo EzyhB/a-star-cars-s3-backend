@@ -1,4 +1,5 @@
-import query from "../db";
+import query from "../db/index.js";
+import multer from "multer";
 
 //controller
 const getImageByID = async (req, res) => {
