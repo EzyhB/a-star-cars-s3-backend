@@ -1,4 +1,5 @@
 import query from "../db/index.js";
+import { uploadImage } from "../s3.js";
 
 //controller
 const getImageByID = async (req, res) => {
@@ -15,10 +16,10 @@ const getImageByID = async (req, res) => {
 const postImageToS3 = async (req, res) => {
   try {
     // Get the images from the request
+    const ID = req.params;
     const images = req.files;
 
     // Do something with the images (e.g. save to S3)
-    console.log("Received images:", images);
 
     if (!req.headers["content-type"].includes("multipart/form-data")) {
       console.log("Invalid request format, expected multipart/form-data.");
@@ -28,11 +29,10 @@ const postImageToS3 = async (req, res) => {
       });
     }
 
-    const ID = req.params;
+    console.log("Received images:", images);
 
-    const files = req.files;
+    uploadImage(images);
 
-    console.log(files);
     res.json({ success: true });
   } catch (error) {
     console.error(error);

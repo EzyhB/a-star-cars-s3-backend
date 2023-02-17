@@ -13,18 +13,33 @@ const s3 = new S3({
 });
 
 //Upload file to S3
-const uploadImage = (file) => {
-  const fileStream = fs.createReadStream(file.path);
+const uploadImage = async (files, id) => {
+  const uploadPromises = files.map((file) => {
+    const fileStream = fs.createReadStream(file.path);
+    const key = `${id}/${file.name}`; // add the folder name "uploads" and the ID to the S3 key
 
-  const uploadParams = {
-    Bucket: bucketName,
-    Body: fileStream,
-    key: file.filename,
-  };
+    const uploadParams = {
+      Bucket: bucketName,
+      Body: fileStream,
+      Key: key,
+    };
 
-  return s3.upload(uploadParams).promise();
+    return s3.upload(uploadParams).promise();
+  });
+
+  const results = await Promise.all(uploadPromises);
+
+  console.log("Uploaded files:", results);
 };
 
 //Download file from S3
+const getImageFromS3 = (fileKey) => {
+  const downloadParams = {
+    Key: fileKey,
+    Bucket: bucketName,
+  };
 
-export { uploadImage };
+  s3.getObject(downloadParams).createReadStream();
+};
+
+export { uploadImage, getImageFromS3 };
