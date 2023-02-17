@@ -1,16 +1,23 @@
 import query from "../db/index.js";
-import { uploadImage } from "../s3.js";
+import { getImagesFromS3, uploadImage } from "../s3.js";
 
 //controller
 const getImageByID = async (req, res) => {
-  const ID = req.params.toString();
+  try {
+    const ID = req.params.toString();
 
-  const data = await query("SELECT * FROM car_images WHERE Id = $1;", [ID]);
+    const data = getImagesFromS3(ID);
 
-  return res.status(200).json({
-    message: "Get all car images by ID operation successful",
-    result: data.rows,
-  });
+    return res.status(200).json({
+      message: "Get all car images by ID operation successful",
+      result: data.rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "An error occurred while processing the request." });
+  }
 };
 
 const postImageToS3 = async (req, res) => {
@@ -33,8 +40,7 @@ const postImageToS3 = async (req, res) => {
 
     const results = await uploadImage(images, ID);
 
-    results.json({
-      status: 200,
+    res.status(200).json({
       message: "Uploaded files:",
       payload: results,
     });
