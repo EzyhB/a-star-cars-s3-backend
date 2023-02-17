@@ -29,7 +29,7 @@ const uploadImage = async (files, id) => {
 
   const results = await Promise.all(uploadPromises);
 
-  console.log("Uploaded files:", results);
+  return results;
 };
 
 //Download file from S3

@@ -31,9 +31,13 @@ const postImageToS3 = async (req, res) => {
 
     console.log("Received images:", images);
 
-    uploadImage(images);
+    const results = await uploadImage(images, ID);
 
-    res.json({ success: true });
+    results.json({
+      status: 200,
+      message: "Uploaded files:",
+      payload: results,
+    });
   } catch (error) {
     console.error(error);
     res
