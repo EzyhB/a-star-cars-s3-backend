@@ -1,4 +1,5 @@
 import S3 from "aws-sdk/clients";
+import fs from "fs";
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_BUCKET_REGION;
@@ -12,5 +13,18 @@ const s3 = new S3({
 });
 
 //Upload file to S3
+const uploadImage = (file) => {
+  const fileStream = fs.createReadStream(file.path);
+
+  const uploadParams = {
+    Bucket: bucketName,
+    Body: fileStream,
+    key: file.filename,
+  };
+
+  return s3.upload(uploadParams).promise();
+};
 
 //Download file from S3
+
+export { uploadImage };
