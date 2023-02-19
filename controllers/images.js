@@ -10,7 +10,7 @@ const getImageByID = async (req, res) => {
 
     return res.status(200).json({
       message: "Get all car images by ID operation successful",
-      result: data.rows,
+      result: data,
     });
   } catch (error) {
     console.error(error);
@@ -40,12 +40,14 @@ const postImageToS3 = async (req, res) => {
 
     const results = await uploadImage(images, ID);
 
+    console.log("got to this part");
+
     res.status(200).json({
       message: "Uploaded files:",
       payload: results,
     });
   } catch (error) {
-    console.error(error);
+    console.error("error here", error);
     res
       .status(500)
       .send({ message: "An error occurred while processing the request." });

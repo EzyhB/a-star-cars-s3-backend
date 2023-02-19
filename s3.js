@@ -1,15 +1,23 @@
-import S3 from "aws-sdk/clients";
+import AWS from "aws-sdk";
 import fs from "fs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_BUCKET_REGION;
 const accessKeyID = process.env.AWS_ACCESS_KEY;
 const secretAccessKey = process.env.AWS_SECRET_KEY;
 
-const s3 = new S3({
-  region,
-  accessKeyID,
-  secretAccessKey,
+// AWS.config.update({
+//   accessKeyId: "your-access-key-id",
+//   secretAccessKey: "your-secret-access-key",
+// });
+
+const s3 = new AWS.S3({
+  region: region,
+  accessKeyId: accessKeyID,
+  secretAccessKey: secretAccessKey,
 });
 
 //Upload file to S3
