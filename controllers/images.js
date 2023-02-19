@@ -4,7 +4,7 @@ import { getImagesFromS3, uploadImage } from "../s3.js";
 //controller
 const getImageByID = async (req, res) => {
   try {
-    const ID = req.params.toString();
+    const ID = req.params.id.toString();
 
     const data = getImagesFromS3(ID);
 
@@ -23,7 +23,7 @@ const getImageByID = async (req, res) => {
 const postImageToS3 = async (req, res) => {
   try {
     // Get the images from the request
-    const ID = req.params;
+    const ID = req.params.id;
     const images = req.files;
 
     // Do something with the images (e.g. save to S3)
@@ -37,6 +37,7 @@ const postImageToS3 = async (req, res) => {
     }
 
     console.log("Received images:", images);
+    console.log("Heres the ID:", ID);
 
     const results = await uploadImage(images, ID);
 

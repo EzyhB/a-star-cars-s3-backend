@@ -22,9 +22,10 @@ const s3 = new AWS.S3({
 
 //Upload file to S3
 const uploadImage = async (files, id) => {
+  const folderName = id.toString();
   const uploadPromises = files.map((file) => {
     const fileStream = fs.createReadStream(file.path);
-    const key = `${id}/${file.name}`; // add the folder name "uploads" and the ID to the S3 key
+    const key = `${folderName}/${file.originalname}`; // add the folder name "uploads" and the ID to the S3 key
 
     const uploadParams = {
       Bucket: bucketName,
