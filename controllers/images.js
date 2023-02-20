@@ -6,7 +6,7 @@ const getImageByID = async (req, res) => {
   try {
     const ID = req.params.id.toString();
 
-    const data = getImagesFromS3(ID);
+    const data = await getImagesFromS3(ID);
 
     return res.status(200).json({
       message: "Get all car images by ID operation successful",

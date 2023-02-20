@@ -42,34 +42,32 @@ const uploadImage = async (files, id) => {
 };
 
 //Download file from S3
-const getImagesFromS3 = (folderKey) => {
+const getImagesFromS3 = async (folderKey) => {
   const listParams = {
     Bucket: bucketName,
     Prefix: folderKey,
   };
 
-  const images = [];
+  try {
+    const data = await s3.listObjectsV2(listParams).promise();
+    const images = [];
 
-  s3.listObjectsV2(listParams, (err, data) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    data.Contents.forEach((obj) => {
+    data.Contents.forEach(async (obj) => {
       const downloadParams = {
         Key: obj.Key,
         Bucket: bucketName,
       };
 
       const imageUrl = s3.getSignedUrl("getObject", downloadParams);
+
       images.push(imageUrl);
     });
 
-    // console.log(images);
-  });
-
-  return images;
+    return images;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
 };
 
 export { uploadImage, getImagesFromS3 };
