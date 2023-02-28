@@ -3,20 +3,31 @@ import { getImagesFromS3, uploadImage } from "../s3.js";
 
 //controller
 const getImageByID = async (req, res) => {
+  const ID = req.params.id.toString();
+
+  const listParams = {
+    Bucket: bucketName,
+    Prefix: folderKey,
+  };
+
   try {
-    const ID = req.params.id.toString();
+    const data = await s3.listObjectsV2(listParams).promise();
 
-    const data = await getImagesFromS3(ID);
+    const objects = data.Contents;
 
-    return res.status(200).json({
-      message: "Get all car images by ID operation successful",
-      result: data,
+    objects.forEach((obj) => {
+      res.setHeader("Content-Type", obj.ContentType);
+      const s3Stream = s3
+        .getObject({ Bucket: listParams.Bucket, Key: obj.Key })
+        .createReadStream();
+      s3Stream.pipe(res);
     });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .send({ message: "An error occurred while processing the request." });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({
+      message: "An error occurred while processing the request.",
+      error: err,
+    });
   }
 };
 

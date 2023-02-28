@@ -42,31 +42,33 @@ const uploadImage = async (files, id) => {
 };
 
 //Download file from S3
-const getImagesFromS3 = async (folderKey) => {
+const getImagesFromS3 = async (req, res) => {
+  const ID = req.params.id.toString();
+
   const listParams = {
     Bucket: bucketName,
-    Prefix: folderKey,
+    Prefix: ID,
   };
 
   try {
     const data = await s3.listObjectsV2(listParams).promise();
-    const images = [];
 
-    data.Contents.forEach(async (obj) => {
-      const downloadParams = {
-        Key: obj.Key,
-        Bucket: bucketName,
-      };
+    const objects = data.Contents;
 
-      const imageUrl = s3.getSignedUrl("getObject", downloadParams);
+    // res.setHeader("Content-Type", obj.ContentType);
 
-      images.push(imageUrl);
+    objects.forEach((obj) => {
+      const s3Stream = s3
+        .getObject({ Bucket: listParams.Bucket, Key: obj.Key })
+        .createReadStream();
+      s3Stream.pipe(res);
     });
-
-    return images;
   } catch (err) {
     console.log(err);
-    return [];
+    return res.status(500).send({
+      message: "An error occurred while processing the request.",
+      error: err,
+    });
   }
 };
 
