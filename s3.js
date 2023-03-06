@@ -55,8 +55,6 @@ const getImagesFromS3 = async (req, res) => {
 
     const objects = data.Contents;
 
-    // res.setHeader("Content-Type", obj.ContentType);
-
     objects.forEach((obj) => {
       const s3Stream = s3
         .getObject({ Bucket: listParams.Bucket, Key: obj.Key })

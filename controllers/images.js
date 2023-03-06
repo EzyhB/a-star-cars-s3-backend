@@ -1,5 +1,9 @@
 import query from "../db/index.js";
 import { getImagesFromS3, uploadImage } from "../s3.js";
+import fs from "fs";
+import util from "util";
+
+const unlinkFile = util.promisify(fs.unlink);
 
 //controller
 const getImageByID = async (req, res) => {
@@ -52,7 +56,9 @@ const postImageToS3 = async (req, res) => {
 
     const results = await uploadImage(images, ID);
 
-    console.log("got to this part");
+    images.forEach(async (el) => {
+      await unlinkFile(el.path);
+    });
 
     res.status(200).json({
       message: "Uploaded files:",
