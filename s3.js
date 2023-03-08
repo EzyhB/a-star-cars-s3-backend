@@ -4,10 +4,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const bucketName = process.env.AWS_BUCKET_NAME;
-const region = process.env.AWS_BUCKET_REGION;
-const accessKeyID = process.env.AWS_ACCESS_KEY;
-const secretAccessKey = process.env.AWS_SECRET_KEY;
+const bucketName = process.env.THE_BUCKET_NAME;
+const region = process.env.THE_BUCKET_REGION;
+const accessKeyID = process.env.THE_ACCESS_KEY;
+const secretAccessKey = process.env.THE_SECRET_KEY;
 
 // AWS.config.update({
 //   accessKeyId: "your-access-key-id",
