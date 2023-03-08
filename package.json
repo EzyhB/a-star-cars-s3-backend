@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node -r dotenv/config ./index.js"
+    "start": "./node_modules/.bin/netlify-lambda -r dotenv/config serve ./index.js",
+    "build": "./node_modules/.bin/netlify-lambda -r dotenv/config build ./index.js"
   },
   "repository": {
     "type": "git",
