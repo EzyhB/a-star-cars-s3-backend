@@ -1,5 +1,5 @@
 import express from "express";
-import { getImageByID, postImageToS3 } from "../controllers/images.js";
+import { postImageToS3 } from "../controllers/images.js";
 import multer from "multer";
 import { getImagesFromS3 } from "../s3.js";
 

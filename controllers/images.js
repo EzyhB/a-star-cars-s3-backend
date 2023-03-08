@@ -1,5 +1,4 @@
-import query from "../db/index.js";
-import { getImagesFromS3, uploadImage } from "../s3.js";
+import { uploadImage } from "../s3.js";
 import fs from "fs";
 import util from "util";
 
