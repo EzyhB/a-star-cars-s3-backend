@@ -1,6 +1,7 @@
 import AWS from "aws-sdk";
-import fs from "fs";
+// import fs from "fs";
 import dotenv from "dotenv";
+import multer from "multer";
 
 dotenv.config();
 
