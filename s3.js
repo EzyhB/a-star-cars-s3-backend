@@ -2,6 +2,7 @@ import AWS from "aws-sdk";
 // import fs from "fs";
 import dotenv from "dotenv";
 import multer from "multer";
+import multerS3 from "multer-s3";
 
 dotenv.config();
 
