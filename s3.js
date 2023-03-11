@@ -123,4 +123,4 @@ const getImagesFromS3 = async (req, res) => {
   }
 };
 
-export { uploadImage, getImagesFromS3, postImageToS3Multer };
+export { uploadImage, getImagesFromS3, postImageToS3Multer, upload };

@@ -1,7 +1,7 @@
 import express from "express";
-import { postImageToS3 } from "../controllers/images.js";
-import multer from "multer";
-import { getImagesFromS3, postImageToS3Multer } from "../s3.js";
+// import { postImageToS3 } from "../controllers/images.js";
+// import multer from "multer";
+import { getImagesFromS3, postImageToS3Multer, upload } from "../s3.js";
 
 // const upload = multer({
 //   dest: "uploads/",
