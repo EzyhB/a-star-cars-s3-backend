@@ -23,19 +23,30 @@ const s3 = new AWS.S3({
 });
 
 // Set up multer-s3 middleware
-const upload = multer({
+const uploadMulter = multer({
   storage: multerS3({
     s3: s3,
-    bucket: "astarcarsales-bucket",
+    bucket: bucketName,
     acl: "public-read",
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null, req.params.id + "/" + file.originalname);
+      cb(null, `${req.params.id}/${file.originalname}`);
     },
   }),
   limits: { fileSize: 50 * 1024 * 1024 },
+
+  fileFilter: function (request, file, cb) {
+    if (!file.mimetype.startsWith("image/")) {
+      cb(new Error("Only image files are allowed!"));
+    } else {
+      cb(null, true);
+    }
+  },
+  // Set boundary option here
+  preservePath: true,
+  boundary: "----WebKitFormBoundary7MA4YWxkTrZu0gW",
 });
 
 //Upload file to S3
@@ -70,7 +81,7 @@ const postImageToS3Multer = async (req, res) => {
     }
 
     // Use multer-s3 middleware to upload the files to S3
-    upload.array("images[]")(req, res, async function (err) {
+    uploadMulter.array("images[]")(req, res, async function (err) {
       if (err) {
         console.log("Error uploading images:", err);
         return res.status(500).send({ message: "Error uploading images." });
@@ -125,4 +136,24 @@ const getImagesFromS3 = async (req, res) => {
   }
 };
 
-export { uploadImage, getImagesFromS3, postImageToS3Multer, upload };
+export { uploadImage, getImagesFromS3, uploadMulter, postImageToS3Multer };
+
+/*
+ // Set boundary option here
+  // Make sure it matches the one used in the client
+  fileFilter: function (request, file, cb) {
+    if (!file.mimetype.startsWith('image/')) {
+      cb(new Error('Only image files are allowed!'));
+    } else {
+      cb(null, true);
+    }
+  },
+  // Set boundary option here
+  // Make sure it matches the one used in the client
+  preservePath: true,
+  // Set boundary option here
+  // Make sure it matches the one used in the client
+  // For example, if the boundary used by the client is "--------------------------947086954294400903070437"
+  // Then set it as follows:
+  boundary: "--------------------------947086954294400903070437"
+  */
