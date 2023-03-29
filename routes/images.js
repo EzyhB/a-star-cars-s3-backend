@@ -1,8 +1,16 @@
 import express from "express";
 import { postImageToS3 } from "../controllers/images.js";
+import multer from "multer";
 
+const upload = multer({
+  limits: {
+    fileSize: 10485760, // 10MB in bytes
+  },
+});
 const ImageRouter = express.Router();
 
-ImageRouter.route("/images/:id").post(postImageToS3);
+ImageRouter.post("/images/:id", upload.single("filezzz"), (req, res) => {
+  postImageToS3(req, res);
+});
 
 export default ImageRouter;

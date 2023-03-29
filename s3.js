@@ -1,5 +1,10 @@
-import AWS from "aws-sdk";
-// import fs from "fs";
+import { Upload } from "@aws-sdk/lib-storage";
+import {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { fromIni } from "@aws-sdk/credential-provider-ini";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,10 +14,12 @@ const region = process.env.THE_BUCKET_REGION;
 const accessKeyID = process.env.THE_ACCESS_KEY;
 const secretAccessKey = process.env.THE_SECRET_KEY;
 
-const s3 = new AWS.S3({
+const s3 = new S3Client({
   region: region,
-  accessKeyId: accessKeyID,
-  secretAccessKey: secretAccessKey,
+  credentials: fromIni({
+    accessKeyId: accessKeyID,
+    secretAccessKey: secretAccessKey,
+  }),
 });
 
 //Upload file to S3
@@ -21,12 +28,17 @@ const uploadFileToS3 = async (imageFile, id) => {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: `${id}/${imageFile.originalname}`,
     Body: imageFile.buffer,
-    ContentType: imageFile.mimetype,
+    ContentType: `multipart/form-data; boundary=${imageFile.boundary}`,
     ACL: "public-read",
   };
 
   try {
-    const { Location } = await s3.upload(params).promise();
+    const upload = new Upload({
+      client: s3,
+      params: params,
+    });
+
+    const { Location } = await upload.done();
     return Location;
   } catch (error) {
     console.error(error);
@@ -44,14 +56,17 @@ const getImagesFromS3 = async (req, res) => {
   };
 
   try {
-    const data = await s3.listObjectsV2(listParams).promise();
+    const command = new ListObjectsV2Command(listParams);
+    const data = await s3.send(command);
 
     const objects = data.Contents;
 
     objects.forEach((obj) => {
-      const s3Stream = s3
-        .getObject({ Bucket: listParams.Bucket, Key: obj.Key })
-        .createReadStream();
+      const command = new GetObjectCommand({
+        Bucket: listParams.Bucket,
+        Key: obj.Key,
+      });
+      const s3Stream = s3.getObject(command).createReadStream();
       s3Stream.pipe(res);
     });
   } catch (err) {

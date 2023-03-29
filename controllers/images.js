@@ -39,10 +39,15 @@ const postImageToS3 = async (req, res) => {
     const imageFile = req.file;
     const ID = req.params.id;
 
+    console.log("before file check", imageFile);
+    console.log("resss", req);
+
     // Check if a file was uploaded
     if (!imageFile) {
+      console.log("we here lol");
       return res.status(400).send({ message: "No file uploaded" });
     }
+    console.log("after file check");
 
     // Upload the file to S3
     const result = await uploadFileToS3(imageFile, ID);
@@ -53,7 +58,7 @@ const postImageToS3 = async (req, res) => {
       data: { imageUrl: result.Location },
     });
   } catch (err) {
-    console.error(err);
+    console.error("dis an error", err);
     res.status(500).send({ message: "Error uploading image" });
   }
 };
