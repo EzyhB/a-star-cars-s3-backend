@@ -2,6 +2,7 @@ import AWS from "aws-sdk";
 import dotenv from "dotenv";
 import multer from "multer";
 import fs from "fs";
+import stream from "stream";
 import multerS3 from "multer-s3";
 
 dotenv.config();
@@ -52,13 +53,15 @@ const uploadMulter = multer({
 const uploadImage = async (files, id) => {
   const folderName = id.toString();
   const uploadPromises = files.map((file) => {
-    const fileStream = fs.createReadStream(file.path);
+    const fileStream = fs.createReadStream(file.location);
+    // const fileStream = new stream.PassThrough();
     const key = `${folderName}/${file.originalname}`; // add the folder name "uploads" and the ID to the S3 key
     const uploadParams = {
       Bucket: bucketName,
       Body: fileStream,
       Key: key,
     };
+
     return s3.upload(uploadParams).promise();
   });
   const results = await Promise.all(uploadPromises);

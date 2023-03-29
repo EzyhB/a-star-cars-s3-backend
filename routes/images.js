@@ -13,6 +13,6 @@ const ImageRouter = express.Router();
 
 ImageRouter.route("/images/:id")
   .get(getImagesFromS3)
-  .post(upload.array("images[]"), postImageToS3);
+  .post(uploadMulter.array("images[]"), postImageToS3);
 
 export default ImageRouter;
