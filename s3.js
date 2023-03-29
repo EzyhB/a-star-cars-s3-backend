@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
-// import fs from "fs";
 import dotenv from "dotenv";
 import multer from "multer";
+import fs from "fs";
 import multerS3 from "multer-s3";
 
 dotenv.config();
@@ -35,7 +35,6 @@ const uploadMulter = multer({
       cb(null, `${req.params.id}/${file.originalname}`);
     },
   }),
-  limits: { fileSize: 50 * 1024 * 1024 },
 
   fileFilter: function (request, file, cb) {
     if (!file.mimetype.startsWith("image/")) {
@@ -51,19 +50,19 @@ const uploadMulter = multer({
 
 //Upload file to S3
 const uploadImage = async (files, id) => {
-  //   const folderName = id.toString();
-  //   const uploadPromises = files.map((file) => {
-  //     const fileStream = fs.createReadStream(file.path);
-  //     const key = `${folderName}/${file.originalname}`; // add the folder name "uploads" and the ID to the S3 key
-  //     const uploadParams = {
-  //       Bucket: bucketName,
-  //       Body: fileStream,
-  //       Key: key,
-  //     };
-  //     return s3.upload(uploadParams).promise();
-  //   });
-  //   const results = await Promise.all(uploadPromises);
-  //   return results;
+  const folderName = id.toString();
+  const uploadPromises = files.map((file) => {
+    const fileStream = fs.createReadStream(file.path);
+    const key = `${folderName}/${file.originalname}`; // add the folder name "uploads" and the ID to the S3 key
+    const uploadParams = {
+      Bucket: bucketName,
+      Body: fileStream,
+      Key: key,
+    };
+    return s3.upload(uploadParams).promise();
+  });
+  const results = await Promise.all(uploadPromises);
+  return results;
 };
 
 // Route handler for POST /api/images/:id

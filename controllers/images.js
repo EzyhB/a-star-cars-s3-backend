@@ -41,6 +41,7 @@ const postImageToS3 = async (req, res) => {
     const images = req.files;
 
     // Do something with the images (e.g. save to S3)
+    console.log(images);
 
     if (!req.headers["content-type"].includes("multipart/form-data")) {
       console.log("Invalid request format, expected multipart/form-data.");
