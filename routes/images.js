@@ -3,6 +3,7 @@ import { postImageToS3 } from "../controllers/images.js";
 import multer from "multer";
 
 const upload = multer({
+  dest: "/uploads",
   limits: {
     fileSize: 10485760, // 10MB in bytes
   },

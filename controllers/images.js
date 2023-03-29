@@ -40,7 +40,7 @@ const postImageToS3 = async (req, res) => {
     const ID = req.params.id;
 
     console.log("before file check", imageFile);
-    console.log("resss", req);
+    // console.log("resss", req);
 
     // Check if a file was uploaded
     if (!imageFile) {
