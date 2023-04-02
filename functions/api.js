@@ -8,6 +8,5 @@ const app = express();
 app.use(cors());
 
 app.use("/.netlify/functions/api", ImageRouter);
-// app.use("/.netlify/functions", imagesRouter);
 
 module.exports.handler = serverless(app);
