@@ -2,7 +2,6 @@ import AWS from "aws-sdk";
 import dotenv from "dotenv";
 import multer from "multer";
 import fs from "fs";
-import stream from "stream";
 import multerS3 from "multer-s3";
 
 dotenv.config();
@@ -12,18 +11,12 @@ const region = process.env.THE_BUCKET_REGION;
 const accessKeyID = process.env.THE_ACCESS_KEY;
 const secretAccessKey = process.env.THE_SECRET_KEY;
 
-// AWS.config.update({
-//   accessKeyId: "your-access-key-id" astarcarsales-bucket,
-//   secretAccessKey: "your-secret-access-key",
-// });
-
 const s3 = new AWS.S3({
   region: region,
   accessKeyId: accessKeyID,
   secretAccessKey: secretAccessKey,
 });
 
-// Set up multer-s3 middleware
 const uploadMulter = multer({
   storage: multerS3({
     s3: s3,
@@ -139,23 +132,3 @@ const getImagesFromS3 = async (req, res) => {
 };
 
 export { uploadImage, getImagesFromS3, uploadMulter, postImageToS3Multer };
-
-/*
- // Set boundary option here
-  // Make sure it matches the one used in the client
-  fileFilter: function (request, file, cb) {
-    if (!file.mimetype.startsWith('image/')) {
-      cb(new Error('Only image files are allowed!'));
-    } else {
-      cb(null, true);
-    }
-  },
-  // Set boundary option here
-  // Make sure it matches the one used in the client
-  preservePath: true,
-  // Set boundary option here
-  // Make sure it matches the one used in the client
-  // For example, if the boundary used by the client is "--------------------------947086954294400903070437"
-  // Then set it as follows:
-  boundary: "--------------------------947086954294400903070437"
-  */
